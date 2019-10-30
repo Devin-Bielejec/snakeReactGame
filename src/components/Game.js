@@ -50,6 +50,7 @@ const Game = () => {
     );
   };
 
+  // Snake eating an apple
   const placeFood = () => {};
 
   const initializeGame = () => {
@@ -59,7 +60,6 @@ const Game = () => {
     const foodX = foodPosition[0];
     const foodY = foodPosition[1];
     let tempBoard = board;
-    console.log(board);
     tempBoard[headX][headY] = "S";
     tempBoard[foodX][foodY] = "A";
     setBoard(tempBoard);
@@ -68,7 +68,7 @@ const Game = () => {
 
   useInterval(
     () => {
-      console.log("interval?!");
+      console.log(board);
       // Your custom logic here
       changeDirection();
 
@@ -76,12 +76,22 @@ const Game = () => {
       if (!changeSnakeHeadPosition()) {
         console.log("error");
       }
+
+      //shift snakeHeadPosition to Body
+      setSnakeBody([snakeHeadPosition, ...snakeBody]);
+
       // Check if snakeHeadPosition has food on it
+      if (
+        snakeHeadPosition[0] === foodPosition[0] &&
+        snakeHeadPosition[1] === foodPosition[1]
+      ) {
+        const foodConsumed = true;
+      }
+
+      //Make function that takes in (foodComsumed, snakeBody, board)
     },
     gameStarted ? 1000 : null
   );
-
-  console.log(board);
 
   return <button onClick={() => initializeGame()}>Start</button>;
 };

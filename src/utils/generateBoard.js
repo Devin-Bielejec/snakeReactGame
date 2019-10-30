@@ -7,7 +7,6 @@ const generateBoard = size => {
     }
     board.push(curRow);
   }
-  console.log("genboard", board);
   return board;
 };
 
