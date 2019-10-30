@@ -15,13 +15,13 @@ const Game = () => {
   const [gameStarted, setGameStarted] = useState(false);
 
   const changeDirection = () => {
-    if (window.event.key === "ArrowUp") {
+    if (window.event && window.event.key === "ArrowUp") {
       setDirection("U");
-    } else if (window.event.key === "ArrowDown") {
+    } else if (window.event && window.event.key === "ArrowDown") {
       setDirection("D");
-    } else if (window.event.key === "ArrowLeft") {
+    } else if (window.event && window.event.key === "ArrowLeft") {
       setDirection("L");
-    } else if (window.event.key === "ArrowRight") {
+    } else if (window.event && window.event.key === "ArrowRight") {
       setDirection("R");
     } else {
       setDirection("U");
@@ -78,7 +78,7 @@ const Game = () => {
       }
       // Check if snakeHeadPosition has food on it
     },
-    gameStarted ? null : null
+    gameStarted ? 1000 : null
   );
 
   console.log(board);
