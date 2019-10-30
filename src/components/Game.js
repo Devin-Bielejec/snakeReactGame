@@ -1,16 +1,17 @@
 import React, { useState } from "react";
 import { useInterval } from "../hooks/useInterval";
 import generateBoard from "../utils/generateBoard";
+import updateBoard from "../utils/updateBoard";
 
 const Game = () => {
-  const [size, setSize] = useState(3);
+  const [size, setSize] = useState(5);
   const [board, setBoard] = useState(generateBoard(size));
   const [direction, setDirection] = useState("U");
   const [snakeHeadPosition, setSnakeHeadPosition] = useState([
     Math.floor(size / 2),
     Math.floor(size / 2)
   ]);
-  const [snakeBody, setSnakeBody] = useState([...snakeHeadPosition]);
+  const [snakeBody, setSnakeBody] = useState([snakeHeadPosition]);
   const [foodPosition, setFoodPosition] = useState([0, 0]);
   const [gameStarted, setGameStarted] = useState(false);
 
@@ -50,9 +51,6 @@ const Game = () => {
     );
   };
 
-  // Snake eating an apple
-  const placeFood = () => {};
-
   const initializeGame = () => {
     //Set snakehead, and food onto board
     const headX = snakeHeadPosition[0];
@@ -68,27 +66,40 @@ const Game = () => {
 
   useInterval(
     () => {
-      console.log(board);
       // Your custom logic here
       changeDirection();
 
       // if snake is on board, continue if not do something to let the user know of loss
       if (!changeSnakeHeadPosition()) {
         console.log("error");
+      } else {
+        console.log("line76", snakeHeadPosition);
       }
 
       //shift snakeHeadPosition to Body
-      setSnakeBody([snakeHeadPosition, ...snakeBody]);
-
+      console.log(snakeBody);
+      console.log(snakeHeadPosition.concat(snakeBody));
+      setSnakeBody([snakeHeadPosition.concat(snakeBody)]);
       // Check if snakeHeadPosition has food on it
+      let foodConsumed = false;
       if (
         snakeHeadPosition[0] === foodPosition[0] &&
         snakeHeadPosition[1] === foodPosition[1]
       ) {
-        const foodConsumed = true;
+        foodConsumed = true;
       }
 
-      //Make function that takes in (foodComsumed, snakeBody, board)
+      //Updating Board based on newSnakeBody, newFoodPosition, Consuming Food
+      const { newBoard, newSnakeBody, newFoodPosition } = updateBoard(
+        board,
+        snakeBody,
+        foodConsumed
+      );
+      setBoard(newBoard);
+      setSnakeBody(newSnakeBody);
+      newFoodPosition
+        ? setFoodPosition(newFoodPosition)
+        : console.log("Snake did not eat food this time!");
     },
     gameStarted ? 1000 : null
   );
