@@ -7,6 +7,13 @@ const generateBoard = size => {
     }
     board.push(curRow);
   }
+  const headX = Math.floor(size / 2);
+  const headY = Math.floor(size / 2);
+  const foodX = 0;
+  const foodY = 0;
+
+  board[headX][headY] = "S";
+  board[foodX][foodY] = "A";
   return board;
 };
 
