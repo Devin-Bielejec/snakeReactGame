@@ -7,12 +7,12 @@ const Game = () => {
   const [size, setSize] = useState(10);
   console.log("RERENDER");
   const [board, setBoard] = useState(generateBoard(size));
+  console.log(board);
   const [direction, setDirection] = useState("U");
   const [snakeBody, setSnakeBody] = useState([
     [Math.floor(size / 2), Math.floor(size / 2)]
   ]);
   const [foodPosition, setFoodPosition] = useState([0, 0]);
-  const [gameStarted, setGameStarted] = useState(false);
 
   const changeDirection = () => {
     let direction;
@@ -52,59 +52,63 @@ const Game = () => {
   };
 
   //update and set state at the end of the use effect
-  useInterval(
-    () => {
-      console.log("hello");
-      setSize(14);
-      setSize(14);
-    },
-    gameStarted ? 3000 : null
+  const startGame = () => {
+    const changedDirection = changeDirection();
+
+    // if snake is on board, continue if not do something to let the user know of loss
+    const movedSnake = moveSnake();
+
+    // Check if snake is outside the boundary of the board
+    if (
+      !(
+        movedSnake[0][0] >= size ||
+        movedSnake[0][0] < 0 ||
+        movedSnake[0][1] >= size ||
+        movedSnake[0][1] < 0
+      )
+    ) {
+      console.log("SNAKE OFF BOARD, ERROR");
+    }
+
+    // Check if snakeBody's head has food on it
+    let foodConsumed = false;
+    if (
+      movedSnake[0][0] === foodPosition[0] &&
+      movedSnake[0][1] === foodPosition[1]
+    ) {
+      foodConsumed = true;
+    }
+
+    //Updating Board based on newSnakeBody, newFoodPosition, Consuming Food
+    const { newBoard, newSnakeBody, newFoodPosition } = updateBoard(
+      board,
+      movedSnake,
+      foodConsumed
+    );
+    //Setting new states
+    setBoard(newBoard);
+    setSnakeBody(newSnakeBody);
+    setDirection(changedDirection);
+    newFoodPosition
+      ? setFoodPosition(newFoodPosition)
+      : console.log("Snake did not eat food this time!");
+  };
+
+  let id;
+  const makeGameGo = () => {
+    id = setInterval(startGame, 3000);
+  };
+
+  const stopGame = () => {
+    clearInterval(id);
+  };
+
+  return (
+    <div>
+      <button onClick={() => makeGameGo()}>Start</button>
+      <button onClick={() => stopGame()}>Stop</button>
+    </div>
   );
-
-  console.log("Board", board);
-  const changedDirection = changeDirection();
-
-  // if snake is on board, continue if not do something to let the user know of loss
-  const movedSnake = moveSnake();
-
-  // Check if snake is outside the boundary of the board
-  if (
-    !(
-      movedSnake[0][0] >= size ||
-      movedSnake[0][0] < 0 ||
-      movedSnake[0][1] >= size ||
-      movedSnake[0][1] < 0
-    )
-  ) {
-    console.log("SNAKE OFF BOARD, ERROR");
-  }
-
-  // Check if snakeBody's head has food on it
-  let foodConsumed = false;
-  if (
-    movedSnake[0][0] === foodPosition[0] &&
-    movedSnake[0][1] === foodPosition[1]
-  ) {
-    foodConsumed = true;
-  }
-
-  //Updating Board based on newSnakeBody, newFoodPosition, Consuming Food
-  console.log("pre new board", board);
-  const { newBoard, newSnakeBody, newFoodPosition } = updateBoard(
-    board,
-    movedSnake,
-    foodConsumed
-  );
-  console.log(newBoard);
-  //Setting new states
-  setBoard(newBoard);
-  setSnakeBody(newSnakeBody);
-  setDirection(changedDirection);
-  newFoodPosition
-    ? setFoodPosition(newFoodPosition)
-    : console.log("Snake did not eat food this time!");
-
-  return <button onClick={() => setGameStarted(true)}>Start</button>;
 };
 
 export default Game;

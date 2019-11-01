@@ -2,12 +2,10 @@
 //new board, new snake body, new apple position
 
 const updateBoard = (board, snakeBody, foodConsumed) => {
-  console.log("update board function", board);
   if (!foodConsumed && snakeBody.length > 1) {
     const tail = snakeBody.pop();
   }
 
-  console.log(board, snakeBody);
   for (let i = 0; i < snakeBody.length; i++) {
     let partX = snakeBody[i][0];
     let partY = snakeBody[i][1];
